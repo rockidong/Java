@@ -14,15 +14,15 @@ import java.io.IOException;
  * Created by RockiDong on 2016-04-29.
  */
 public class ClientGZipContentCompression {
-    public static void main(String[] args)  throws Exception{
+    public static void main(String[] args) throws Exception {
 
         HttpClientBuilder hb = HttpClients.custom();
 
         hb.addInterceptorFirst(new HttpRequestInterceptor() {
             @Override
             public void process(HttpRequest httpRequest, HttpContext httpContext) throws HttpException, IOException {
-                if(!httpRequest.containsHeader("Accept-Encoding")){
-                    httpRequest.addHeader("Accept-Encoding","gzip");
+                if (!httpRequest.containsHeader("Accept-Encoding")) {
+                    httpRequest.addHeader("Accept-Encoding", "gzip");
                 }
             }
         });
@@ -32,26 +32,38 @@ public class ClientGZipContentCompression {
             public void process(HttpResponse httpResponse, HttpContext httpContext) throws HttpException, IOException {
 
                 HttpEntity entity = httpResponse.getEntity();
-                if(entity != null )
-                {
+                if (entity != null) {
                     Header contentEncoding = httpResponse.getFirstHeader("Content-Encoding");
 
-                    if(contentEncoding.getValue().equalsIgnoreCase("gzip")){
+                    if (contentEncoding.getValue().equalsIgnoreCase("gzip")) {
                         httpResponse.setEntity(new GzipDecompressingEntity(entity));
                     }
                 }
             }
         });
 
+        /* 위의 방식이 아니라면 다음과 같이 만들어야 한다.
+        * Header ceheader = entity.getContentEncoding();
+        * if(ceHeader != null){
+        * HeaderElement[] codecs = ceheader.getElements();
+        * for(int i = 0 ; i < codecs.length; i++){
+        * if(codecs[i].getName().equalsIgnoreCase("gzip")){
+        * resonse.setEntity(new GzipDecompressingEntity(entity));
+        * return;
+        * }
+        * }
+        * }
+         */
+
         CloseableHttpClient httpclient = hb.build();
 
-        try{
+        try {
             HttpGet httpget = new HttpGet("http://www.apache.org/");
-            System.out.println("Execution request " + httpget.getURI() );
+            System.out.println("Execution request " + httpget.getURI());
 
             CloseableHttpResponse response = httpclient.execute(httpget);
 
-            try{
+            try {
                 System.out.println("---------------------------------------");
                 System.out.println(response.getStatusLine());
                 System.out.println(response.getLastHeader("Content-Encoding"));
@@ -59,8 +71,7 @@ public class ClientGZipContentCompression {
                 System.out.println("---------------------------------------");
 
                 HttpEntity entity = response.getEntity();
-                if(entity != null )
-                {
+                if (entity != null) {
                     String content = EntityUtils.toString(entity);
                     System.out.println(content);
                     System.out.println("---------------------------------------");
@@ -69,11 +80,11 @@ public class ClientGZipContentCompression {
                 }
 
 
-            }finally {
+            } finally {
                 response.close();
             }
 
-        }finally{
+        } finally {
             httpclient.close();
         }
 
