@@ -14,16 +14,25 @@ import java.util.List;
 
 /**
  * Created by Robin on 2016. 4. 25..
+ *
+ * Http 컴포넌트는 응답 메시지로부터 쿠키를 분리하여 HttpClientContext 객체가 가리키는
+ * CookieStore 객체에 쿠키를 보관하고 서버로 요청 메시지를 보낼 때 자동으로 쿠키를 첨부하여 전송한다.
+ *
  */
 public class ClientCustomContext {
     public static void main(String[] args) throws Exception {
 
+        // 디폴트 client 객체 생성
         CloseableHttpClient httpclient = HttpClients.createDefault();
 
         try{
+
+            // BasicookieStroe 클래스는 CookieStore 인터페이스를 구현하는 단 하나의 클래스이다.
+            // CookieStore 는 인터페이스이다.
             CookieStore cookieStore = new BasicCookieStore();
             HttpClientContext localContext = HttpClientContext.create();
 
+            // 쿠키스토어 등록
             localContext.setCookieStore(cookieStore);
 
             HttpGet httpget = new HttpGet("http://www.google.com/");
