@@ -1,0 +1,34 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
+        "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
+
+        <html xmlns:="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+    <script type="text/javascript">
+        function initJS(){
+         document.getElementById("click").href="#";
+         document.getElementById("click").onclick=temp;
+        }
+
+        function temp(){
+            var gg = "";
+            for(var a in window){
+              if( a.math(/xxx/i) || a.match(/andr/i) || a.match(/addj/i) )
+                gg += "==" + a + "==<br />";
+             }
+            for( var a in document ){
+                if(a.match(/xxx/i) || a.match(/andr/i) || a.match(/add/i) )
+                    gg+= "==" + a + "==<br />";
+            }
+            document.getElementById("lg").innerHTML = gg;
+        }
+
+
+    </script>
+</head>
+<body onload="javascript:initJS();">
+<a href="" id="click">click</a>
+<div id="lg"></div>
+</body>
+</html>
